@@ -24,7 +24,7 @@ log_message() {
   # Ensure log directory exists
   sudo mkdir -p "$LOG_DIR"
   # Log message to both console and log file
-  echo "$(date +%Y-%m-%d %H:%M:%S) - $message" | sudo tee -a "$LOG_FILE"
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - $message" | sudo tee -a "$LOG_FILE"
 }
  
 # --- Pre-installation Checks ---
