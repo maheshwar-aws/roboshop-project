@@ -12,16 +12,19 @@ enabled=1
 gpgcheck=0"
 # Define the MongoDB configuration file path.
 MONGO_CONF_FILE="/etc/mongod.conf"
-# Define the log file path for the script's operations.
-LOG_FILE="/var/log/mongodb_install.log"
-# Define the minimum required disk space in GB.
-MIN_DISK_SPACE_GB=5
+# Define the log directory path.
+LOG_DIR="/var/log/mongodb_install"
+# Define the log file path for the scripts operations.
+LOG_FILE="$LOG_DIR/mongodb_install.log"
  
 # --- Logging Function ---
 # Function to log messages with a timestamp.
 log_message() {
   local message="$1"
-  echo "$(date '+%Y-%m-%d %H:%M:%S') - $message" | sudo tee -a "$LOG_FILE"
+  # Ensure log directory exists
+  sudo mkdir -p "$LOG_DIR"
+  # Log message to both console and log file
+  echo "$(date +%Y-%m-%d %H:%M:%S) - $message" | sudo tee -a "$LOG_FILE"
 }
  
 # --- Pre-installation Checks ---
@@ -33,28 +36,12 @@ check_root_privileges() {
   fi
 }
  
-# Function to check for sufficient disk space.
-check_disk_space() {
-  local available_space_kb=$(df -k . | awk 'NR==2 {print $4}')
-  local available_space_gb=$((available_space_kb / 1024 / 1024))
- 
-  if (( available_space_gb < MIN_DISK_SPACE_GB )); then
-    log_message "ERROR: Insufficient disk space. Required: ${MIN_DISK_SPACE_GB}GB, Available: ${available_space_gb}GB."
-    exit 1
-  else
-    log_message "Sufficient disk space available (${available_space_gb}GB)."
-  fi
-}
- 
 # --- Main Installation Logic ---
 log_message "Starting MongoDB installation script."
  
 # Check for root privileges
 check_root_privileges
 log_message "Root privileges confirmed."
- 
-# Check for disk space
-check_disk_space
  
 # --- Repository Setup ---
 log_message "Setting up MongoDB repository..."
@@ -102,7 +89,7 @@ log_message "Configuring MongoDB to listen on all interfaces..."
 if [ -f "$MONGO_CONF_FILE" ]; then
   # Change the bind IP address to 0.0.0.0 to allow remote connections.
   # This replaces 127.0.0.1 with 0.0.0.0 in the configuration file.
-  sed -i 's/127.0.0.1/0.0.0.0/g' "$MONGO_CONF_FILE"
+  sed -i s/127.0.0.1/0.0.0.0/g "$MONGO_CONF_FILE"
   if [ $? -eq 0 ]; then
     log_message "MongoDB configuration updated to listen on 0.0.0.0."
  
