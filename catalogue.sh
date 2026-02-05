@@ -8,7 +8,7 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 SCRIPT_DIR=$PWD
-MONGODB_HOST=mongodb.daws88s.online
+MONGODB_HOST=mongodb.dawspractice.online
 
 if [ $USERID -ne 0 ]; then
     echo -e "$R Please run this script with root user access $N" | tee -a $LOGS_FILE
@@ -69,7 +69,7 @@ systemctl enable catalogue  &>>$LOGS_FILE
 systemctl start catalogue
 VALIDATE $? "Starting and enabling catalogue"
 
-cp $SCRIPT_DIR/mongodb.repo /etc/yum.repos.d/mongodb.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 
 INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
