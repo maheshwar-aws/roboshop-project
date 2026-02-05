@@ -1,6 +1,6 @@
 # Content for the MongoDB repository file.
 # This specifies the repository for MongoDB 7.0 on Red Hat 9 x86_64.
-name="[mongodb-org-7.0]
+[mongodb-org-7.0]
 name=MongoDB Repository
 baseurl=https://repo.mongodb.org/yum/redhat/9/mongodb-org/7.0/x86_64/
 enabled=1
